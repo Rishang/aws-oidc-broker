@@ -1,0 +1,55 @@
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Lato&display=swap');
+
+:root {
+  --border-color: hsl(45, 75%, 80%);
+  --acc-id: hsl(285, 75%, 80%);
+  --role: hsl(160, 60%, 70%);
+  --mint-red: hsl(350, 60%, 70%);
+}
+
+body {
+  background: hsl(0, 0%, 10%);
+  color: hsl(0, 0%, 100%);
+  font-family: 'Lato', sans-serif;
+  position: relative;
+}
+
+body::-webkit-scrollbar {
+  width: 0.50rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: #353535;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(hsl(246, 100%, 80%), hsl(165, 100%, 80%));
+}
+
+
+h1 {
+  font-family: 'Major Mono Display', monospace;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 4vmin;
+  font-family: 'Major Mono Display', monospace;
+  font-weight: bold;
+}
+
+h5 {
+  font-family: 'Major Mono Display', monospace;
+  font-weight: bold;
+}
+
+.gap {
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
+}
+
+.btn {
+  line-height: 1;
+}

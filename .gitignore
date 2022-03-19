@@ -1,0 +1,27 @@
+**/__pycache__
+*.pyc
+**/.classpath
+**/.dockerignore
+**/.env
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/bin
+**/charts
+**/compose*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+tmp
+.env
+.pipenv
+
+# Ignore DevSpace cache and log folder
+.devspace/
+venv

@@ -1,0 +1,99 @@
+.basic-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 75rem);
+}
+
+
+.box-btn {
+  background-color: hsl(180, 12%, 11%);
+  color: hsl(41, 81%, 65%);
+  border: var(--border-color) 2.5px solid;
+  text-decoration: inherit;
+}
+
+.box-btn:hover {
+  background-color: #2e3838;
+}
+
+.box-btn span {
+  max-width: 0;
+  -webkit-transition: max-width 0.5s;
+  transition: max-width 0.5s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.box-btn:hover span {
+  max-width: 6rem;
+  color: hsl(24, 71%, 68%);
+  transition-delay: 0.5s;
+}
+
+.card {
+  display: flex;
+  height: auto;
+  max-height: 2em;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: hsl(0, 0%, 21%);
+  font-family: 'Fira Code', monospace;
+  font-size: 3vmin;
+  color: #fff;
+  box-shadow: rgba(3, 8, 20, 0.1) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+  align-content: center;
+  justify-content: space-between;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card:hover {
+  box-shadow: hsla(220, 82%, 4%, 0.1) 0px 0.135em 0.75em, rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
+  background-color: hsl(0, 0%, 16%);
+  transform: translateY(-3px) scale(1.01);
+}
+
+.card small {
+  font-size: medium;
+}
+
+.card .acc-id {
+  color: var(--acc-id);
+}
+
+.card .role {
+  color: var(--role);
+}
+
+.card .seprator {
+  color: var(--mint-red);
+}
+
+/* aws cli content */
+pre code:hover {
+  background: hsl(204deg 20% 12%);
+}
+
+
+/* media for diffeerent screen sizes  */
+@media (min-width: 1200px) {
+  .card {
+    font-size: 2em;
+  }
+
+  .role-content {
+    padding: 4rem;
+    margin-top: -3rem;
+  }
+}
+
+[v-cloak] {
+  display: none;
+}

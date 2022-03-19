@@ -1,0 +1,71 @@
+.navbar {
+  /* position: unset; */
+  display: grid;
+  justify-content: center;
+  justify-items: end;
+  gap: 1rem;
+  align-items: center;
+  grid-template-columns: repeat(2, auto);
+}
+
+.navbar figure {
+  border: var(--border-color) 5px solid;
+  height: 60px;
+  width: 60px;
+  align-self: center;
+  margin-top: 2%;
+  position: relative;
+  text-align: end;
+  justify-items: end;
+}
+
+.navbar h1 {
+  font-size: 43px;
+  color: hsl(35, 100%, 70%);
+  text-align: center;
+  font-family: 'Major Mono Display', monospace;
+  font-weight: bold;
+}
+
+
+.navbar .user-avtar {
+  position: absolute;
+  top: 0.5rem;
+  right: 0px;
+}
+
+.navbar .user-avtar .avtar{
+  border: 5px solid #fff;
+  border-radius: 5px;
+}
+
+
+@media (max-width: 600px){
+  /* .navbar {
+    justify-content: space-between;
+  } */
+
+  .navbar h1 {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: 30px;
+  }
+
+  .role-content h3 {
+    font-size: 25px;
+    margin-top: 25px;
+    text-align: center;
+  }
+  
+  .navbar .user-avtar {
+    transform: scale(0.8);
+    margin-right: -5px;
+  }
+}
+
+@media (min-width: 1200px){
+  .navbar {
+    margin-top: -15px;
+  }
+}
+

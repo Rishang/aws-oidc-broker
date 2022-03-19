@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{: title :} aws</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!--vuejs-->
+  <script src="https://unpkg.com/vue@3"></script>
+
+  <!-- hilight js-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+
+  <link rel="stylesheet" href="/styles/__main__.css">
+</head>
+
+<body>
+  <div class="container role-content" id="app">
+
+    <nav class="navbar">
+      <span>
+        <h1>{: title :} <i class="fa-brands fa-aws"></i> </h1>
+      </span>
+
+      <div v-if="username" class="user-avtar">
+        <div class="avtar">
+          <img :src="user_image"
+            :alt="username">
+        </div>
+        <div class="avtar-name">
+          <h6>@{{username}}</h6>
+          <small>
+            <a class="btn btn-danger" href="/logout">logout</a>
+          </small>
+        </div>
+      </div>
+      <div v-else class="p-2 m-2">
+        <a href="/login" class="btn btn-primary">Login</a>
+      </div>
+
+    </nav>
+
+    <br>
+    <div v-if="userinfo.roles">
+      <h3>AWS Roles</h3>
+      <br>
+      <section class="basic-grid">
+
+        <div v-cloak v-for="(item, index) in userinfo.roles" ref="items">
+          <div class="card">
+            <span class="ms-2">
+              <span class="acc-id">{{ item.split(':')[4] }}</span>
+              <i class="m-sm-2 fa-solid fa-grip-lines-vertical seprator"></i>
+              <span class="role">{{ item.split('/')[1] }}</span>
+            </span>
+
+            <div>
+              <span>
+                <button class="box-btn" id="cli" @click="getcli(item, index)">
+                  <i :class="{ 'visually-hidden': load_opened.includes(index) }" class="fa-solid fa-terminal"></i>
+                  <bdi :class="{ 'spinner-border': load_opened.includes(index) }" role="status">
+                    <span :class="{ 'visually-hidden': load_opened.includes(index) }">&nbsp;cli</span>
+                  </bdi>
+                </button>
+              </span>
+              <span class="gap"></span>
+              <button class="box-btn" id="console" @click="getconsole(item, index)">
+                <i class="fa-brands fa-chrome"></i>
+                <span>&nbsp;web</span>
+              </button>
+            </div>
+          </div>
+
+          <div v-cloak v-if="opened.includes(index)" class="p-2 m-1">
+            <div class="bg-dark rounded-3">
+
+              <div>
+                <span class="float-end p-1">
+                  <button class="btn btn-danger rounded-3" @click="toggle(index, opened)">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </span>
+              </div>
+
+              <div v-if="opened.includes(index)" class="container p-2 rounded-3 bg-dark">
+                <h5>Account id: {{ cli.account_id }}</h5>
+                <div>
+                  <b>To: set aws profile Linux/Mac/Windows</b>
+
+                  <span class="m-0 p-3">
+                    <span @click="copy_clipboard('profile')" id="copy_profile" class="btn btn-outline-light rounded-3">
+                      <i class="fa-regular fa-copy small"></i>
+                    </span>
+                  </span>
+                  <span @click="copy_clipboard('profile')">
+                    <pre>
+                      <code class="hljs rounded-3" v-html="cli_profile"></code>
+                    </pre>
+                  </span>
+                </div>
+
+                <div>
+                  <b>To: Export environment variables linux/mac</b>
+
+                  <span class="m-0 p-3">
+                    <span @click="copy_clipboard('linux')" id="copy_linux" class="btn btn-outline-light rounded-3">
+                      <i class="fa-regular fa-copy small"></i>
+                    </span>
+                  </span>
+
+                  <span @click="copy_clipboard('linux')">
+                    <pre>
+                      <code class="hljs rounded-3" v-html="cli_linux"></code>
+                    </pre>
+                  </span>
+                </div>
+
+                <div>
+                  <b>To: Export environment variables windows</b>
+
+                  <span class="m-0 p-3">
+                    <span @click="copy_clipboard('windows')" id="copy_windows" class="btn btn-outline-light rounded-3">
+                      <i class="fa-regular fa-copy small"></i>
+                    </span>
+                  </span>
+
+                  <span @click="copy_clipboard('windows')">
+                    <pre>
+                      <code class="hljs rounded-3" v-html="cli_windows"></code>
+                    </pre>
+                  </span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+
+</body>
+
+<script>
+  const userinfo = JSON.parse('{: userinfo | safe :}')
+</script>
+<script src="/scripts/cli.js"></script>
+<script src="/scripts/main.js"></script>
+
+</html>

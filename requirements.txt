@@ -1,0 +1,6 @@
+boto3
+authlib==0.15.5
+flask
+python-dotenv
+requests
+gunicorn
