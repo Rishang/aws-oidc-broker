@@ -1,8 +1,8 @@
 version: '3.6'
 
 services:
-  awsopenidbroker:
-    image: awsopenidbroker
+  broker:
+    image: aws-openid-broker
     build:
       context: .
       dockerfile: ./Dockerfile
