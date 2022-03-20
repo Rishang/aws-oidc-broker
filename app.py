@@ -3,7 +3,7 @@ import os
 
 if __name__ == "__main__":
     env = os.environ.get("FLASK_ENV")
-    if isinstance(env, str) and "main" in env.lower():
+    if isinstance(env, str) and env.lower() in ["main","master"]:
         app.run()
     else:
         app.run(debug=True)
