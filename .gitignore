@@ -1,7 +1,6 @@
 **/__pycache__
 *.pyc
 **/.classpath
-**/.dockerignore
 **/.env
 **/.project
 **/.settings
