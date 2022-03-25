@@ -55,7 +55,7 @@ Configure environment variables as required.
 | VARIABLE NAME | Example VALUE | DESCRIPTION | REQUIRED |
 | --- | --- | --- | --- |
 | `KEYCLOAK_CLIENT_ID` | `aws-oidc`| Client ID | yes |
-| `KEYCLOAK_ISSUER` | `https://auth.example.com/auth/realms/sandbox` | Keycloak Authentication Issuer URL | yes |
+| `KEYCLOAK_WELLKNOWN` | `https://example.dev/auth/realms/test/.well-known/openid-configuration` | Keycloak well-known openid URL | yes |
 | `APP_SECRET` | `!apppasswd` | optional env variable to set encrytion secret | no |
 | `TITLE` | `Example Broker` | Title to display on Broker UI | no |
 

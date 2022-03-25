@@ -48,7 +48,7 @@ title = (config.TITLE == "" and "Keycloak") or config.TITLE.capitalize()
 oauth = OAuth(app)
 oauth.register(
     name=PROVIDER,
-    server_metadata_url=config.KEYCLOAK_WELL_KNOWN,
+    server_metadata_url=config.KEYCLOAK_WELLKNOWN,
     client_kwargs={"scope": "openid email profile"},
 )
 
