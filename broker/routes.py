@@ -38,9 +38,12 @@ def logout():
 
 @app.route("/auth")
 def auth():
-    keycloak_oidc.authorize_access_token()
-    user = keycloak_oidc.userinfo()
-    if user:
+    token = keycloak_oidc.authorize_access_token()
+
+    if "userinfo" in token:
+        session["user"] = token["userinfo"]
+    else:
+        user = keycloak_oidc.userinfo(token=token)
         session["user"] = user
 
     return redirect(url_for("homepage"))

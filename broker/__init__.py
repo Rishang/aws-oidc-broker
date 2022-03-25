@@ -5,7 +5,7 @@ ref: https://github.com/authlib/demo-oauth-client/tree/master/flask-google-login
 """
 
 from flask import Flask
-from authlib.integrations.flask_client import OAuth, FlaskRemoteApp
+from authlib.integrations.flask_client import OAuth, FlaskOAuth2App
 from .data import KeyCloakOpenIdconfig
 from .utils import obj_annotations, load_or_read_env
 
@@ -52,6 +52,6 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )
 
-keycloak_oidc: FlaskRemoteApp = oauth.create_client(PROVIDER)
+keycloak_oidc: FlaskOAuth2App = oauth.create_client(PROVIDER)
 
 from broker import routes
