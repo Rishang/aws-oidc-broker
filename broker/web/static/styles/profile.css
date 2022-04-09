@@ -32,6 +32,8 @@
   position: absolute;
   top: 0.5rem;
   right: 0px;
+  width: 4.5rem;
+  max-width: 5rem;
 }
 
 .navbar .user-avtar .avtar{

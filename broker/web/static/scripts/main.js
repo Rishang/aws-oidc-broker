@@ -69,7 +69,7 @@ const app = Vue.createApp({
     username: function () {
       let username = this.userinfo.preferred_username
       if (username) {
-        return username.split('@')[0]
+        return username.split('@')[0].replace('_','.').split('.')[0]
       }
       return false
     },
