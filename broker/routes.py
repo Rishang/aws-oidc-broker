@@ -18,9 +18,14 @@ def homepage():
         return render_template("index.html", title=title, userinfo=json.dumps({}))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET"])
 def login():
-    redirect_uri = url_for("auth", _external=True)
+    args: dict = request.args.to_dict()
+
+    if session.get("user"):
+        return redirect(url_for("homepage"))
+
+    redirect_uri = url_for("auth", _external=True, role=args.get("role"), type="cli")
     return keycloak_oidc.authorize_redirect(redirect_uri)
 
 
@@ -46,6 +51,11 @@ def auth():
         user = keycloak_oidc.userinfo(token=token)
         session["user"] = user
 
+    args: dict = request.args.to_dict()
+
+    if session.get("user") and args.get("role") != None:
+        return redirect(url_for("aws_auth", role=args.get("role"), type="cli"))
+
     return redirect(url_for("homepage"))
 
 
@@ -57,7 +67,7 @@ def aws_auth():
     type: str = args.get("type")
 
     if None in [userinfo, role]:
-        return jsonify(msg("error", "Missing userinfo or role"))
+        return redirect(url_for("login", role=role))
 
     if role not in userinfo.get("roles"):
         return jsonify(msg.error("Invalid Role"))
@@ -69,6 +79,7 @@ def aws_auth():
         token=token["access_token"],
         role=role,
         username=userinfo.get("preferred_username"),
+        issuer=request.headers.get("Host")
     )
     if sts_role["expired"] == True:
         return redirect(url_for("login"))
