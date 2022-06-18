@@ -1,0 +1,47 @@
+site_name: AWS OIDC BROKER
+repo_url: https://github.com/Rishang/aws-oidc-broker
+nav:
+    - Home: index.md
+    - Getting Started: getting-started.md
+    - Setup: 
+        - Keycloak: "setup/keycloak.md"
+    - Environment: variables.md
+    - Deployment: deployment.md
+
+theme:
+  name: material
+  logo: assets/logo.png
+  font:
+    text: Noto Sans
+    code: JetBrains Mono
+  features:
+    - content.code.annotate
+    - navigation.tracking
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue-grey
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+        
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue-grey
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list

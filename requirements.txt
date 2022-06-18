@@ -1,5 +1,5 @@
 boto3
-authlib==1.0.0
+authlib==1.0.1
 flask
 python-dotenv
 requests

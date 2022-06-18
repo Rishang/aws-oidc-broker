@@ -2,6 +2,7 @@
 **/.classpath
 **/.dockerignore
 **/.git
+**/.env
 **/.gitignore
 **/.project
 **/.settings
@@ -23,7 +24,6 @@
 **/values.dev.yaml
 README.md
 tmp
-.pipenv
-**/.env
-**.example
-.env
+.venv
+cli.py
+venv
