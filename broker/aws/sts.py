@@ -1,5 +1,3 @@
-# Refrences: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_enable-console-custom-url.html#STSConsoleLink_programPython
-
 import json
 import urllib
 
@@ -31,8 +29,11 @@ class AWSRoleSTS:
         self.duration_seconds = duration_seconds
         return self.response
 
-    def generate_console_url(self, issuer: str = "example.com") -> str:
+    def generate_console_url(self, issuer: str = None) -> str:
         """Generate aws console access url"""
+
+        if issuer == None or issuer == "":
+            issuer = "example.com"
 
         if self.response is None:
             raise Exception("No response from STS")
@@ -88,7 +89,7 @@ class AWSRoleSTS:
         return request_url
 
 
-def get_role(token, role: str, username: str = ""):
+def get_role(token, role: str, username: str = "", issuer: str = None):
     """Provide aws sts role access to aws cli or console based on web identity token"""
 
     sts: dict = {}
@@ -98,7 +99,7 @@ def get_role(token, role: str, username: str = ""):
         aws_role = AWSRoleSTS(role_arn=role)
     try:
         sts["cli"] = aws_role.oidc_sts(jwt_token=token)
-        sts["console"] = aws_role.generate_console_url()
+        sts["console"] = aws_role.generate_console_url(issuer=issuer)
         sts["expired"] = False
         return sts
     except aws_role.client.exceptions.ExpiredTokenException:
