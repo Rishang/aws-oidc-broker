@@ -11,6 +11,8 @@ import json
 @app.route("/home")
 @app.route("/")
 def homepage():
+    """application homepage"""
+
     userinfo = session.get("user")
     if userinfo:
         return render_template("index.html", title=title, userinfo=json.dumps(userinfo))
@@ -20,6 +22,8 @@ def homepage():
 
 @app.route("/login", methods=["GET"])
 def login():
+    """login client path"""
+
     args: dict = request.args.to_dict()
 
     if session.get("user"):
@@ -31,18 +35,24 @@ def login():
 
 @app.route("/userinfo")
 def userinfo():
+    """userinfo of authenticated user provided via oidc provider"""
+
     userinfo = session.get("user")
     return jsonify(userinfo)
 
 
 @app.route("/logout")
 def logout():
+    """logout and remove user session"""
+
     session.clear()
     return redirect(url_for("homepage"))
 
 
 @app.route("/auth")
 def auth():
+    """authenticate user via oidc provider"""
+
     token = keycloak_oidc.authorize_access_token()
 
     if "userinfo" in token:
@@ -61,6 +71,8 @@ def auth():
 
 @app.route("/aws", methods=["GET"])
 def aws_auth():
+    """provide aws iam role based creds to"""
+
     args: dict = request.args.to_dict()
     role: str = args.get("role")
     userinfo = session.get("user")
@@ -79,7 +91,7 @@ def aws_auth():
         token=token["access_token"],
         role=role,
         username=userinfo.get("preferred_username"),
-        issuer=request.headers.get("Host")
+        issuer=request.headers.get("Host"),
     )
     if sts_role["expired"] == True:
         return redirect(url_for("login"))
