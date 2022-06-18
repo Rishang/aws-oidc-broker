@@ -20,6 +20,7 @@
 tmp
 .env
 .pipenv
+.venv
 
 # Ignore DevSpace cache and log folder
 .devspace/
