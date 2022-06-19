@@ -2,8 +2,10 @@ name: docs
 on:
   push:
     branches:
-      - master 
       - main
+    paths:
+      - 'docs/**'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
