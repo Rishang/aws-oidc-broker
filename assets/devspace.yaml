@@ -1,0 +1,57 @@
+version: v1beta11
+# `images` specifies all images that may need to be built for this project
+images:
+  aws-broker:
+    image: aws-broker
+    dockerfile: Dockerfile
+    context: .
+    tags:
+      - latest
+    build:
+      buildKit:
+        inCluster: {}
+      docker:
+        options:
+          buildArgs:
+            APP_NAME: aws
+
+# `deployments` tells DevSpace how to deploy this project
+deployments:
+- name: aws-broker
+  # This deployment uses `helm` but you can also define `kubectl` deployments or kustomizations
+  helm:
+    # We are deploying the so-called Component Chart: https://devspace.sh/component-chart/docs
+    componentChart: true
+    # Under `values` we can define the values for this Helm chart used during `helm install/upgrade`
+    # You may also use `valuesFiles` to load values from files, e.g. valuesFiles: ["values.yaml"]
+    values:
+      containers:
+      - image: image(aws-broker):tag(aws-broker)
+        
+        name: aws-broker
+        env:
+        - name: KEYCLOAK_CLIENT_ID
+          value: "aws-oidc"
+        - name: KEYCLOAK_ISSUER
+          value: "https://auth.example.com/realms/sandbox"
+        - name: APP_SECRET
+          value: "secret"
+        - name: TITLE
+          value: "Example"
+        - name: KEYCLOAK_CLIENT_SECRET
+          valueFrom:                  # Option 2: Load value from another resource
+            secretKeyRef:             # Option 2.1: Use the content of a Kubernetes secret as value
+              name: keycloak-client     # Name of the secret
+              key: KEYCLOAK_CLIENT_SECRET
+      service:
+        ports:
+        - port: 5000
+      ingress:
+        tls: true
+        ingressClass: nginx
+        tlsClusterIssuer: letsencrypt
+        rules:
+        - host: aws.openxcell.dev
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          cert-manager.io/cluster-issuer: letsencrypt
