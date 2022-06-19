@@ -4,6 +4,26 @@ OpenID Based Identity Broker for AWS (Built as an alternative to AWS SSO to supp
 
 ![demo image](.github/images/panel.png)
 
+
+## Broker authentication flow 
+
+```mermaid
+sequenceDiagram;
+
+participant User;
+participant Broker;
+participant IDP;
+participant AWS;
+
+User -->> Broker: Login via IDP
+Broker -->> IDP: Forward Auth Request
+IDP -->> Broker: IDP Login Successful
+User -->> Broker: Open AWS Console
+Broker -->> AWS: Request Session
+AWS -->> Broker: Login Successfull
+Broker -->> Browser: Open AWS Console
+```
+
 ## Getting Started
 
 Quick Start with docker compose
