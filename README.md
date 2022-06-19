@@ -67,6 +67,6 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-- [Flask](https://flask.palletsprojects.com/en/2.0.x/) - The web framework used
+- [Flask](https://flask.palletsprojects.com/) - The web framework used
 
 - [VueJs](https://vuejs.org/) - The web framework for building web user interfaces.
