@@ -21,6 +21,8 @@ tmp
 .env
 .pipenv
 .venv
+.mypy_cache
+**/.mypy_cache
 
 # Ignore DevSpace cache and log folder
 .devspace/

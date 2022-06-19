@@ -27,3 +27,5 @@ tmp
 .venv
 cli.py
 venv
+.mypy_cache
+**/.mypy_cache
