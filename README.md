@@ -1,6 +1,6 @@
-# AWS OpenID Broker
+# AWS OpenID Credential Broker
 
-OpenID Based Identity Broker for AWS (Built as an alternative to AWS SSO to support OpenID Federation)
+OpenID Based Identity Credential Broker for AWS (Built as an alternative to AWS SSO to support OpenID Federation)
 
 ![demo image](.github/images/panel.png)
 
