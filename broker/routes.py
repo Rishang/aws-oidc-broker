@@ -75,6 +75,8 @@ def aws_auth():
 
     args: dict = request.args.to_dict()
     role: str = args.get("role")
+    region: str = args.get("region")
+
     userinfo = session.get("user")
     type: str = args.get("type")
 
@@ -92,6 +94,7 @@ def aws_auth():
         role=role,
         username=userinfo.get("preferred_username"),
         issuer=request.headers.get("Host"),
+        region=region,
     )
     if sts_role["expired"] == True:
         return redirect(url_for("login"))

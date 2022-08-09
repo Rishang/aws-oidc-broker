@@ -6,10 +6,36 @@ import boto3
 import requests
 
 
+aws_regions = {
+    "us-east-1": "N. Virginia",
+    "us-east-2": "Ohio",
+    "us-west-1": "N. California",
+    "us-west-2": "Oregon",
+    "af-south-1": "Cape Town",
+    "ap-east-1": "Hong Kong",
+    "ap-southeast-3": "Jakarta",
+    "ap-south-1": "Mumbai",
+    "ap-northeast-3": "Osaka",
+    "ap-northeast-2": "Seoul",
+    "ap-southeast-1": "Singapore",
+    "ap-southeast-2": "Sydney",
+    "ap-northeast-1": "Tokyo",
+    "ca-central-1": "Central",
+    "eu-central-1": "Frankfurt",
+    "eu-west-1": "Ireland",
+    "eu-west-2": "London",
+    "eu-south-1": "Milan",
+    "eu-west-3": "Paris",
+    "eu-north-1": "Stockholm",
+    "me-south-1": "Middle Bahrain",
+}
+
+
 class AWSRoleSTS:
-    def __init__(self, role_arn: str, username: str = "") -> None:
+    def __init__(self, role_arn: str, username: str = "", region: str = None) -> None:
         self.role_arn = role_arn
         self.username = username
+        self.region = region
 
     def oidc_sts(self, jwt_token: str, duration_seconds: int = 3600) -> dict:
         """
@@ -27,6 +53,11 @@ class AWSRoleSTS:
         )
 
         self.duration_seconds = duration_seconds
+
+        if isinstance(self.region, str) or self.region in aws_regions:
+            # login based on region if provided
+            self.response["Region"] = self.region
+
         return self.response
 
     def generate_console_url(self, issuer: str = None) -> str:
@@ -81,7 +112,10 @@ class AWSRoleSTS:
         request_parameters = "?Action=login"
         request_parameters += f"&Issuer={issuer}"
         request_parameters += "&Destination=" + quote_plus_function(
+            # login based on region if provided
             "https://console.aws.amazon.com/"
+            if not isinstance(self.region, str) or self.region not in aws_regions
+            else f"https://{self.region}.console.aws.amazon.com/"
         )
         request_parameters += "&SigninToken=" + signin_token["SigninToken"]
         request_url = "https://signin.aws.amazon.com/federation" + request_parameters
@@ -89,12 +123,14 @@ class AWSRoleSTS:
         return request_url
 
 
-def get_role(token, role: str, username: str = "", issuer: str = None):
+def get_role(
+    token, role: str, username: str = "", issuer: str = None, region: str = None
+):
     """Provide aws sts role access to aws cli or console based on web identity token"""
 
     sts: dict = {}
     if isinstance(username, str) and username != "":
-        aws_role = AWSRoleSTS(role_arn=role, username=username)
+        aws_role = AWSRoleSTS(role_arn=role, username=username, region=region)
     else:
         aws_role = AWSRoleSTS(role_arn=role)
     try:
