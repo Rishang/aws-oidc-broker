@@ -2,6 +2,8 @@ name: DockerHub Release
 on:
   release:
     types: [published, edited]
+env:
+  DOCKER_BUILDKIT: 1
 
 jobs:
   deploy:
