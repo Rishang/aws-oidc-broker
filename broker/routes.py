@@ -74,11 +74,12 @@ def aws_auth():
     """provide aws iam role based creds to"""
 
     args: dict = request.args.to_dict()
+
     role: str = args.get("role")
     region: str = args.get("region")
-
     userinfo = session.get("user")
     type: str = args.get("type")
+    duration_s: str = args.get("duration_seconds") or 3600
 
     if None in [userinfo, role]:
         return redirect(url_for("login", role=role))
@@ -95,7 +96,9 @@ def aws_auth():
         username=userinfo.get("preferred_username"),
         issuer=request.headers.get("Host"),
         region=region,
+        duration_seconds=int(duration_s),
     )
+
     if sts_role["expired"] == True:
         return redirect(url_for("login"))
 

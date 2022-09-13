@@ -32,12 +32,20 @@ aws_regions = {
 
 
 class AWSRoleSTS:
-    def __init__(self, role_arn: str, username: str = "", region: str = None) -> None:
+    def __init__(
+        self,
+        role_arn: str,
+        username: str = "",
+        region: str = None,
+        duration_seconds: int = 3600,
+    ) -> None:
+
         self.role_arn = role_arn
         self.username = username
         self.region = region
+        self.duration_seconds = duration_seconds
 
-    def oidc_sts(self, jwt_token: str, duration_seconds: int = 3600) -> dict:
+    def oidc_sts(self, jwt_token: str) -> dict:
         """
         Returns a boto3 client for OpenID Connect STS (Security Token Service)
         """
@@ -49,10 +57,8 @@ class AWSRoleSTS:
             RoleArn=self.role_arn,
             RoleSessionName=self.username or "sts-role-session",
             WebIdentityToken=jwt_token,
-            DurationSeconds=duration_seconds,
+            DurationSeconds=self.duration_seconds,
         )
-
-        self.duration_seconds = duration_seconds
 
         if isinstance(self.region, str) or self.region in aws_regions:
             # login based on region if provided
@@ -124,13 +130,23 @@ class AWSRoleSTS:
 
 
 def get_role(
-    token, role: str, username: str = "", issuer: str = None, region: str = None
+    token,
+    role: str,
+    username: str = "",
+    issuer: str = None,
+    region: str = None,
+    duration_seconds: int = 3600,
 ):
     """Provide aws sts role access to aws cli or console based on web identity token"""
 
     sts: dict = {}
     if isinstance(username, str) and username != "":
-        aws_role = AWSRoleSTS(role_arn=role, username=username, region=region)
+        aws_role = AWSRoleSTS(
+            role_arn=role,
+            username=username,
+            region=region,
+            duration_seconds=duration_seconds,
+        )
     else:
         aws_role = AWSRoleSTS(role_arn=role)
     try:
