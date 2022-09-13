@@ -1,4 +1,4 @@
-name: docker release
+name: DockerHub Release
 on:
   release:
     types: [published, edited]
@@ -8,4 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: echo $GITHUB_REF_NAME
+      
+      - name: tag name
+        run: echo $GITHUB_REF_NAME
+      
+      - uses: docker/login-action@v2
+        with:
+          username: rishang
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: build
+        run: |
+          docker build -t aws-oidc-broker .
+          docker tag aws-oidc-broker rishang/aws-oidc-broker:$GITHUB_REF_NAME
+          docker tag aws-oidc-broker rishang/aws-oidc-broker:latest
+      
+      - name: push
+        run: |
+          docker push rishang/aws-oidc-broker:$GITHUB_REF_NAME
+          docker push rishang/aws-oidc-broker:latest
