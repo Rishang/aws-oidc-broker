@@ -3,11 +3,11 @@ Flask oidc clinet for keycloak
 
 ref: https://github.com/authlib/demo-oauth-client/tree/master/flask-google-login
 """
-
 from flask import Flask
 from authlib.integrations.flask_client import OAuth, FlaskOAuth2App
-from .data import KeyCloakOpenIdconfig
-from .utils import obj_annotations, load_or_read_env
+
+from data import KeyCloakOpenIdconfig
+from utils import obj_annotations, load_or_read_env
 
 app = Flask(
     __name__,
@@ -29,7 +29,7 @@ app.jinja_options = jinja_options
 PROVIDER = "keycloak"
 
 
-def oidc_conf(provider: str, config_path: str = ".env"):
+def oidc_conf(provider: str, config_path: str = "../.env"):
     """Read oidc config from dotenv file"""
 
     if provider.lower() == "keycloak":
@@ -53,5 +53,3 @@ oauth.register(
 )
 
 keycloak_oidc: FlaskOAuth2App = oauth.create_client(PROVIDER)
-
-from broker import routes

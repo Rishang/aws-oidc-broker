@@ -1,8 +1,16 @@
-from flask import request, session, url_for, redirect, jsonify, render_template
-from .aws import sts
-from . import app, keycloak_oidc, title
-from .utils import msg
+"""
+Main routes file for running server, to start server 
+run: python routes.py 
+"""
+
+import os
 import json
+
+from flask import request, session, url_for, redirect, jsonify, render_template
+
+from aws import sts
+from serve import app, keycloak_oidc, title
+from utils import msg
 
 # flask cors import
 # from flask_cors import CORS
@@ -106,3 +114,11 @@ def aws_auth():
         return jsonify(sts_role["cli"])
     elif type == "console":
         return redirect(sts_role["console"])
+
+
+if __name__ == "__main__":
+    env = os.environ.get("FLASK_ENV")
+    if isinstance(env, str) and env.lower() in ["main", "master"]:
+        app.run()
+    else:
+        app.run(debug=True)
