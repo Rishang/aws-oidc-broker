@@ -27,8 +27,6 @@ def obj_annotations(obj: object):
 
 def load_or_read_env(items: list[str], env_path: str):
 
-    env_path = os.path.abspath(".") + "/" + env_path
-
     conf = {}
 
     if os.path.isfile(env_path):
