@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "aws-oidc-broker"
+version = "0.1.0"
+description = ""
+authors = ["Rishang"]
+readme = "README.md"
+keywords = ["packaging", "poetry"]
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+packages = [{ include = "device" },]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+rich = "^13.2.0"
+typer = "^0.7.0"
+authlib = "^1.2.0"
+requests = "*"
+python-dotenv = "^0.21.1"
+pyjwt = "^2.6.0"
+flask = "^2.2.2"
+boto3 = "^1.26.54"
+gunicorn = "^20.1.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.991"
+black = "*"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
