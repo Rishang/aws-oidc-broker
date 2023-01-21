@@ -23,8 +23,8 @@ with open(f"{WORKDIR}/pyproject.toml") as f:
     readme = pyproject["tool"]["poetry"]["readme"]
 
 
-# if os.environ.get("PYTHONDONTWRITEBYTECODE"):
-for package in packages:
-    py_fix(f"{WORKDIR}/{package['include']}")
+if os.environ.get("PYTHONDONTWRITEBYTECODE"):
+    for package in packages:
+        py_fix(f"{WORKDIR}/{package['include']}")
 
-py_fix(path=WORKDIR, mkdir=False, file=readme)
+    py_fix(path=WORKDIR, mkdir=False, file=readme)
