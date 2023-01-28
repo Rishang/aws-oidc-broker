@@ -8,7 +8,7 @@ import typer
 
 from utils import State, HOME, Logger
 
-STATE_CONFIG_FILE = "../tmp/test.json"
+STATE_CONFIG_FILE = f"{HOME}/.aws/oidc-profiles.json"
 
 logger = Logger()
 
