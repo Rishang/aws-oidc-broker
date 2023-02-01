@@ -9,10 +9,10 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-packages = [{ include = "device" },]
+packages = [{ include = "device" },{ include = "broker" }]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8"
 rich = "^13.2.0"
 typer = "^0.7.0"
 authlib = "^1.2.0"
