@@ -3,11 +3,10 @@ from typing import Optional
 
 import typer
 import jwt
-from rich.prompt import Prompt
 
-from auth import login as _login, ALGORITHMS
-from utils import HOME, md5hash, pprint
-from config import (
+from device.auth import ALGORITHMS, aws_console, login as _login
+from device.utils import HOME, md5hash, pprint, prompt
+from device.config import (
     profiles,
     Profile,
     AwsConfig,
@@ -17,7 +16,6 @@ from config import (
 )
 
 app = typer.Typer(help=f"AWS broker for different auth")
-prompt = Prompt()
 
 
 @app.command()
@@ -55,9 +53,8 @@ def config(
         help="OPTIONAL: Audience value is either the application (Client ID) for an ID Token or the API that is being called (API Identifier) for an Access Token.",
     ),
 ):
-
     if audience == None:
-        prompt.ask(f"OPTIONAL: OpenID auth provider audience", default=None)
+        audience = prompt.ask(f"OPTIONAL: OpenID auth provider audience", default="")
 
     profiles.set(
         key=profile,
@@ -73,10 +70,18 @@ def config(
 
 @app.command(name="login")
 def login(
-    profile: str = typer.Argument(None, help="auth via oidc provider for aws access")
+    profile: str = typer.Option(
+        "--profile", help="auth via oidc provider for aws access"
+    )
 ):
+    if profile == None:
+        print("Required aws profile name")
+        return
+
     _p: Profile = profiles.get(profile)
-    token_data = _login(domain=_p.client_wellknown, client_id=_p.client_id)
+    token_data = _login(
+        domain=_p.client_wellknown, client_id=_p.client_id, audience=_p.audience
+    )
 
     access_token = token_data["access_token"]
     pprint(
@@ -103,6 +108,19 @@ def login(
             web_identity_token_file=f"{filepath}/{filename}", role_arn=_p.role_arn
         ),
     )
+
+
+@app.command(name="console")
+def console(
+    profile: str = typer.Option(
+        None, "--profile", help="auth via oidc provider for aws console access"
+    )
+):
+    if profile == None:
+        print("Required aws profile name")
+        return
+
+    aws_console(profile)
 
 
 if __name__ == "__main__":

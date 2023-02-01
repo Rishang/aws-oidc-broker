@@ -7,8 +7,10 @@ from typing import Dict
 from dataclasses import is_dataclass
 
 from rich import print as pprint
+from rich.prompt import Prompt
 
 HOME = f"{pathlib.Path.home()}"
+prompt = Prompt()
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):

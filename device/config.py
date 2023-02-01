@@ -9,6 +9,7 @@ import typer
 from utils import State, HOME, Logger
 
 STATE_CONFIG_FILE = f"{HOME}/.aws/oidc-profiles.json"
+AWS_CONFIG_FILE = f"{HOME}/.aws/config"
 
 logger = Logger()
 
@@ -32,13 +33,11 @@ class AwsConfig:
 profiles = State(STATE_CONFIG_FILE, obj=Profile)
 
 
-def awsconfig(
-    profile: str, aws_config: AwsConfig, awsconfig_file=f"{HOME}/.aws/config"
-):
+def awsconfig(profile: str, aws_config: AwsConfig):
     profile = f"profile {profile}"
 
     config = configparser.ConfigParser()
-    config.read(awsconfig_file)
+    config.read(AWS_CONFIG_FILE)
     write_flag = False
 
     if not config.has_section(profile):
@@ -54,7 +53,7 @@ def awsconfig(
             write_flag = True
 
     if write_flag:
-        with open(awsconfig_file, "w") as configfile:
+        with open(AWS_CONFIG_FILE, "w") as configfile:
             config.write(configfile)
 
 
@@ -66,7 +65,6 @@ def _check_aws_iam(arn: str):
 
 
 def _check_wellknown_openid(url: str):
-
     domain = re.sub(r"(https?:\/\/)?(\.well-known.+)?", "", url)
 
     if domain[-1] == "/":
