@@ -1,12 +1,14 @@
 import configparser
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict, Any
 import re
 
 import requests
 import typer
 
-from utils import State, HOME, Logger
+# local
+from device.utils import HOME, Logger
+from device.state import State
 
 STATE_CONFIG_FILE = f"{HOME}/.aws/oidc-profiles.json"
 AWS_CONFIG_FILE = f"{HOME}/.aws/config"
@@ -21,6 +23,27 @@ class Profile:
     client_id: str
     audience: Optional[str] = ""
 
+    def _check_aws_iam(self, arn: str):
+        if re.search(r"^(arn:aws:iam::)([0-9]{12}):role\/([a-zA-Z0-9\-]+)", arn):
+            return arn
+        else:
+            raise typer.BadParameter("Invalid iam role arn.")
+
+    def _check_wellknown_openid(self, url: str):
+        domain = re.sub(r"(https?:\/\/)?(\.well-known.+)?", "", url)
+
+        if domain[-1] == "/":
+            domain = domain[:-1]
+
+        try:
+            requests.get(f"https://{domain}/.well-known/openid-configuration").json()
+        except:
+            raise typer.BadParameter(
+                "Invalid openid-configuration domain.", param_hint="op"
+            )
+
+        return domain
+
 
 @dataclass
 class AwsConfig:
@@ -30,7 +53,7 @@ class AwsConfig:
     role_arn: str
 
 
-profiles = State(STATE_CONFIG_FILE, obj=Profile)
+profiles: Dict[str, Profile] = State(STATE_CONFIG_FILE, obj=Profile)  # type: ignore
 
 
 def awsconfig(profile: str, aws_config: AwsConfig):
@@ -55,26 +78,3 @@ def awsconfig(profile: str, aws_config: AwsConfig):
     if write_flag:
         with open(AWS_CONFIG_FILE, "w") as configfile:
             config.write(configfile)
-
-
-def _check_aws_iam(arn: str):
-    if re.search(r"^(arn:aws:iam::)([0-9]{12}):role\/([a-zA-Z0-9\-]+)", arn):
-        return arn
-    else:
-        raise typer.BadParameter("Invalid iam role arn.")
-
-
-def _check_wellknown_openid(url: str):
-    domain = re.sub(r"(https?:\/\/)?(\.well-known.+)?", "", url)
-
-    if domain[-1] == "/":
-        domain = domain[:-1]
-
-    try:
-        requests.get(f"https://{domain}/.well-known/openid-configuration").json()
-    except:
-        raise typer.BadParameter(
-            "Invalid openid-configuration domain.", param_hint="op"
-        )
-
-    return domain

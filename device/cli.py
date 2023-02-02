@@ -4,16 +4,10 @@ from typing import Optional
 import typer
 import jwt
 
+# local
 from device.auth import ALGORITHMS, aws_console, login as _login
 from device.utils import HOME, md5hash, pprint, prompt
-from device.config import (
-    profiles,
-    Profile,
-    AwsConfig,
-    awsconfig,
-    _check_wellknown_openid,
-    _check_aws_iam,
-)
+from device.config import profiles, Profile, AwsConfig, awsconfig
 
 app = typer.Typer(help=f"AWS broker for different auth")
 
@@ -32,14 +26,14 @@ def config(
         "--role",
         help="AWS IAM role arn which has to be accessed",
         prompt="AWS IAM OpenID fedrated role arn",
-        callback=_check_aws_iam,
+        callback=Profile._check_aws_iam,
     ),
     client_wellknown: str = typer.Option(
         None,
         "--client-wellknown",
         help="auth oidc provider .well-known/openid-configuration url domain.",
         prompt=f"OpenID auth provider client wellknown url",
-        callback=_check_wellknown_openid,
+        callback=Profile._check_wellknown_openid,
     ),
     client_id: str = typer.Option(
         None,
@@ -56,7 +50,7 @@ def config(
     if audience == None:
         audience = prompt.ask(f"OPTIONAL: OpenID auth provider audience", default="")
 
-    profiles.set(
+    profiles.set(  # type: ignore
         key=profile,
         value=Profile(
             role_arn=role,
@@ -65,7 +59,7 @@ def config(
             audience=audience,
         ),
     )
-    profiles.save()
+    profiles.save()  # type: ignore
 
 
 @app.command(name="login")
@@ -78,7 +72,7 @@ def login(
         print("Required aws profile name")
         return
 
-    _p: Profile = profiles.get(profile)
+    _p: Profile = profiles.get(profile)  # type: ignore
     token_data = _login(
         domain=_p.client_wellknown, client_id=_p.client_id, audience=_p.audience
     )
