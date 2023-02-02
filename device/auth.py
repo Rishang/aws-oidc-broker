@@ -11,7 +11,7 @@ import requests
 
 sys.path.append("../")
 
-from utils import pprint, prompt
+from utils import pprint, prompt, log
 from config import AWS_CONFIG_FILE
 from broker.aws import sts
 
@@ -40,7 +40,7 @@ def login(domain: str, client_id: str, audience: Optional[str] = ""):
     )
 
     if device_code_response.status_code != 200:
-        print("Error generating the device code")
+        typer.echo("Error generating the device code")
         raise typer.Exit(code=1)
 
     pprint("Device code successful")
@@ -100,8 +100,7 @@ def aws_console(profile: str):
         with open(web_identity_token_file, "r") as t:
             token = t.read()
     else:
-        print(f"token file: {web_identity_token_file} Not found")
-        raise typer.Exit(code=1)
+        log.error(f"token file: {web_identity_token_file} Not found", exit=True)
 
     console_access = sts.get_role(token=token, role=role_arn, region=region)["console"]
 

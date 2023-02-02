@@ -1,19 +1,17 @@
+import re
 import configparser
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
-import re
+from typing import Optional, Dict
 
 import requests
 import typer
 
 # local
-from device.utils import HOME, Logger
+from device.utils import HOME
 from device.state import State
 
 STATE_CONFIG_FILE = f"{HOME}/.aws/oidc-profiles.json"
 AWS_CONFIG_FILE = f"{HOME}/.aws/config"
-
-logger = Logger()
 
 
 @dataclass

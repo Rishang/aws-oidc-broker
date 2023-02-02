@@ -9,7 +9,7 @@ from device.auth import ALGORITHMS, aws_console, login as _login
 from device.utils import HOME, md5hash, pprint, prompt
 from device.config import profiles, Profile, AwsConfig, awsconfig
 
-app = typer.Typer(help=f"AWS broker for different auth")
+app = typer.Typer(help=f"AWS IAM access broker for OpenID connect auth providers")
 
 
 @app.command()
@@ -69,7 +69,7 @@ def login(
     )
 ):
     if profile == None:
-        print("Required aws profile name")
+        typer.echo("Required aws profile name", err=True)
         return
 
     _p: Profile = profiles.get(profile)  # type: ignore
@@ -111,7 +111,7 @@ def console(
     )
 ):
     if profile == None:
-        print("Required aws profile name")
+        typer.echo("Required aws profile name", err=True)
         return
 
     aws_console(profile)

@@ -1,6 +1,7 @@
 import hashlib
 import pathlib
 
+import typer
 from rich import print as pprint
 from rich.prompt import Prompt
 
@@ -9,8 +10,16 @@ prompt = Prompt()
 
 
 class Logger:
-    def error(self, message):
+    def error(self, message, exit: bool = False):
         pprint(f"\n[red]ERROR: {message}")
+        if exit:
+            raise typer.Exit(code=1)
+
+    def info(self, message):
+        pprint(f"\n[red]INFO: {message}")
+
+
+log = Logger()
 
 
 def md5hash(value: str):
