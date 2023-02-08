@@ -3,25 +3,28 @@ from typing import Optional
 
 import typer
 import jwt
-from rich.prompt import Prompt
 
-from auth import login as _login, ALGORITHMS
-from utils import HOME, md5hash, pprint
-from config import (
-    profiles,
-    Profile,
-    AwsConfig,
-    awsconfig,
-    _check_wellknown_openid,
-    _check_aws_iam,
+# local
+from device.auth import ALGORITHMS, aws_console, login as _login
+from device.utils import HOME, md5hash, pprint, prompt
+from device.config import profiles, Profile, AwsConfig, awsconfig
+
+app = typer.Typer(help=f"AWS IAM access broker for OpenID connect Auth providers.")
+
+
+def see_help(arg: str = ""):
+    pprint(
+        "This command required arguments, use "
+        f"[yellow]{arg} --help[reset]"
+        " to see them"
+    )
+    exit(1)
+
+
+@app.command(
+    help="Create a profile that sources temporary AWS credentials from AWS Single Sign-On via OIDC Auth provider."
 )
-
-app = typer.Typer(help=f"AWS broker for different auth")
-prompt = Prompt()
-
-
-@app.command()
-def config(
+def configure(
     profile: str = typer.Option(
         None,
         "--profile",
@@ -34,14 +37,14 @@ def config(
         "--role",
         help="AWS IAM role arn which has to be accessed",
         prompt="AWS IAM OpenID fedrated role arn",
-        callback=_check_aws_iam,
+        callback=Profile._check_aws_iam,
     ),
     client_wellknown: str = typer.Option(
         None,
         "--client-wellknown",
         help="auth oidc provider .well-known/openid-configuration url domain.",
         prompt=f"OpenID auth provider client wellknown url",
-        callback=_check_wellknown_openid,
+        callback=Profile._check_wellknown_openid,
     ),
     client_id: str = typer.Option(
         None,
@@ -55,11 +58,10 @@ def config(
         help="OPTIONAL: Audience value is either the application (Client ID) for an ID Token or the API that is being called (API Identifier) for an Access Token.",
     ),
 ):
-
     if audience == None:
-        prompt.ask(f"OPTIONAL: OpenID auth provider audience", default=None)
+        audience = prompt.ask(f"OPTIONAL: OpenID auth provider audience", default="")
 
-    profiles.set(
+    profiles.set(  # type: ignore
         key=profile,
         value=Profile(
             role_arn=role,
@@ -68,15 +70,26 @@ def config(
             audience=audience,
         ),
     )
-    profiles.save()
+    profiles.save()  # type: ignore
 
 
-@app.command(name="login")
+@app.command(
+    name="login",
+    help="Login to AWS profile via OIDC Auth and retrieves an AWS SSO access token to exchange for AWS credentials.",
+)
 def login(
-    profile: str = typer.Argument(None, help="auth via oidc provider for aws access")
+    profile: str = typer.Option(
+        "--profile", help="auth via oidc provider for AWS access."
+    )
 ):
-    _p: Profile = profiles.get(profile)
-    token_data = _login(domain=_p.client_wellknown, client_id=_p.client_id)
+    if profile == None:
+        typer.echo("Required aws profile name", err=True)
+        see_help("console")
+
+    _p: Profile = profiles.get(profile)  # type: ignore
+    token_data = _login(
+        domain=_p.client_wellknown, client_id=_p.client_id, audience=_p.audience
+    )
 
     access_token = token_data["access_token"]
     pprint(
@@ -103,6 +116,37 @@ def login(
             web_identity_token_file=f"{filepath}/{filename}", role_arn=_p.role_arn
         ),
     )
+
+
+@app.command(name="ls", help="List AWS Profiles configured for OIDC Auth.")
+def list_profiles():
+    for p in profiles.keys():
+        pprint(f"\nProfile: [yellow bold]{p}")
+        pprint(f"Configs: {profiles.get(p)}")
+
+
+@app.command(name="rm", help="Remove AWS Profile configured for OIDC Auth.")
+def remove_profiles(profile: str = typer.Option("--profile", help="remove OICD")):
+    if profiles.get(profile):
+        profiles.pop(profile)
+        awsconfig(profile=profile, remove=True)
+        profiles.save()  # type: ignore
+        pprint(f"Removed Profile: {profile}")
+
+
+@app.command(
+    name="console",
+    help="Get AWS Console base access in browser based on your AWS Profile.",
+)
+def console(
+    profile: str = typer.Option(
+        None, "--profile", help="auth via oidc provider for AWS console access"
+    )
+):
+    if profile == None:
+        see_help("console")
+
+    aws_console(profile)
 
 
 if __name__ == "__main__":

@@ -24,6 +24,10 @@ tmp
 .mypy_cache
 **/.mypy_cache
 
+# ignore package builds
+dist/
+**/dist
+
 # Ignore DevSpace cache and log folder
 .devspace/
 venv
