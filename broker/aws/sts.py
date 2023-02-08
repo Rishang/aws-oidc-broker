@@ -36,10 +36,9 @@ class AWSRoleSTS:
         self,
         role_arn: str,
         username: str = "",
-        region: str = None,
+        region: str = None,  # type: ignore
         duration_seconds: int = 3600,
     ) -> None:
-
         self.role_arn = role_arn
         self.username = username
         self.region = region
@@ -66,7 +65,7 @@ class AWSRoleSTS:
 
         return self.response
 
-    def generate_console_url(self, issuer: str = None) -> str:
+    def generate_console_url(self, issuer: str = None) -> str:  # type: ignore
         """Generate aws console access url"""
 
         if issuer == None or issuer == "":
@@ -133,8 +132,8 @@ def get_role(
     token,
     role: str,
     username: str = "",
-    issuer: str = None,
-    region: str = None,
+    issuer: str = None,  # type: ignore
+    region: str = None,  # type: ignore
     duration_seconds: int = 3600,
 ):
     """Provide aws sts role access to aws cli or console based on web identity token"""

@@ -111,6 +111,17 @@ def list_profiles():
         pprint(f"Configs: {profiles.get(p)}")
 
 
+@app.command(name="rm")
+def remove_profiles(
+    profile: str = typer.Option(
+        "--profile", help="auth via oidc provider for aws access"
+    )
+):
+    if profiles.get(profile):
+        profiles.pop(profile)
+        profiles.save()  # type: ignore
+
+
 @app.command(name="console")
 def console(
     profile: str = typer.Option(
