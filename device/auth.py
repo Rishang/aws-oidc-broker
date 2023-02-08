@@ -11,8 +11,8 @@ import requests
 
 sys.path.append("../")
 
-from utils import pprint, prompt, log
-from config import AWS_CONFIG_FILE
+from device.utils import pprint, prompt, log
+from device.config import AWS_CONFIG_FILE
 from broker.aws import sts
 
 ALGORITHMS = ["RS256"]

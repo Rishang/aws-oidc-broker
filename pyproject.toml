@@ -11,6 +11,9 @@ classifiers = [
 ]
 packages = [{ include = "device" },{ include = "broker" }]
 
+[tool.poetry.scripts]
+aws-oidc = "device.cli:app"
+
 [tool.poetry.dependencies]
 python = ">=3.8"
 rich = "^13.2.0"
