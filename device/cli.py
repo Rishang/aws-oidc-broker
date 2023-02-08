@@ -120,7 +120,9 @@ def list_profiles():
 def remove_profiles(profile: str = typer.Option("--profile", help="remove OICD")):
     if profiles.get(profile):
         profiles.pop(profile)
+        awsconfig(profile=profile, remove=True)
         profiles.save()  # type: ignore
+        pprint(f"Removed Profile: {profile}")
 
 
 @app.command(

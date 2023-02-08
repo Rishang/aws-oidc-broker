@@ -54,24 +54,30 @@ class AwsConfig:
 profiles: Dict[str, Profile] = State(STATE_CONFIG_FILE, obj=Profile)  # type: ignore
 
 
-def awsconfig(profile: str, aws_config: AwsConfig):
+def awsconfig(profile: str, aws_config: AwsConfig | None = None, remove: bool = False):
     profile = f"profile {profile}"
 
     config = configparser.ConfigParser()
     config.read(AWS_CONFIG_FILE)
     write_flag = False
 
-    if not config.has_section(profile):
-        config.add_section(profile)
-
-    for arg in aws_config.__annotations__:
-        if not config.has_option(profile, arg):
-            config.set(profile, arg, aws_config.__dict__[arg])
+    if remove == True:
+        if config.has_section(profile):
+            config.remove_section(profile)
             write_flag = True
 
-        elif aws_config.__dict__[arg] != config[profile][arg]:
-            config[profile][arg] = aws_config.__dict__[arg]
-            write_flag = True
+    else:
+        if not config.has_section(profile):
+            config.add_section(profile)
+
+        for arg in aws_config.__annotations__:
+            if not config.has_option(profile, arg):
+                config.set(profile, arg, aws_config.__dict__[arg])
+                write_flag = True
+
+            elif aws_config.__dict__[arg] != config[profile][arg]:
+                config[profile][arg] = aws_config.__dict__[arg]
+                write_flag = True
 
     if write_flag:
         with open(AWS_CONFIG_FILE, "w") as configfile:
