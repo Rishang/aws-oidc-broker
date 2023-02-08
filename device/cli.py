@@ -125,11 +125,11 @@ def remove_profiles(profile: str = typer.Option("--profile", help="remove OICD")
 
 @app.command(
     name="console",
-    help="Get AWS Console base access in browser based on your aws profile.",
+    help="Get AWS Console base access in browser based on your AWS Profile.",
 )
 def console(
     profile: str = typer.Option(
-        None, "--profile", help="auth via oidc provider for aws console access"
+        None, "--profile", help="auth via oidc provider for AWS console access"
     )
 ):
     if profile == None:
