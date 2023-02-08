@@ -42,7 +42,7 @@ class State:
 
     def save(self):
         with open(self.state_file, "w") as f:
-            json.dump(self.state, f, indent=2, cls=EnhancedJSONEncoder)
+            json.dump(self.state, f, cls=EnhancedJSONEncoder)
 
     def get(self, key: str) -> Dict:
         return self.state.get(key)  # type: ignore

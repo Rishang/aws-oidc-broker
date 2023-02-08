@@ -12,10 +12,19 @@ from device.config import profiles, Profile, AwsConfig, awsconfig
 app = typer.Typer(help=f"AWS IAM access broker for OpenID connect Auth providers.")
 
 
+def see_help(arg: str = ""):
+    pprint(
+        "This command required arguments, use "
+        f"[yellow]{arg} --help[reset]"
+        " to see them"
+    )
+    exit(1)
+
+
 @app.command(
     help="Create a profile that sources temporary AWS credentials from AWS Single Sign-On via OIDC Auth provider."
 )
-def config(
+def configure(
     profile: str = typer.Option(
         None,
         "--profile",
@@ -75,7 +84,7 @@ def login(
 ):
     if profile == None:
         typer.echo("Required aws profile name", err=True)
-        return
+        see_help("console")
 
     _p: Profile = profiles.get(profile)  # type: ignore
     token_data = _login(
@@ -135,8 +144,7 @@ def console(
     )
 ):
     if profile == None:
-        typer.echo("Required aws profile name", err=True)
-        return
+        see_help("console")
 
     aws_console(profile)
 
