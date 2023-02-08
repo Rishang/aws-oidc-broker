@@ -9,10 +9,12 @@ from device.auth import ALGORITHMS, aws_console, login as _login
 from device.utils import HOME, md5hash, pprint, prompt
 from device.config import profiles, Profile, AwsConfig, awsconfig
 
-app = typer.Typer(help=f"AWS IAM access broker for OpenID connect auth providers")
+app = typer.Typer(help=f"AWS IAM access broker for OpenID connect Auth providers.")
 
 
-@app.command()
+@app.command(
+    help="Create a profile that sources temporary AWS credentials from AWS Single Sign-On via OIDC Auth provider."
+)
 def config(
     profile: str = typer.Option(
         None,
@@ -62,10 +64,13 @@ def config(
     profiles.save()  # type: ignore
 
 
-@app.command(name="login")
+@app.command(
+    name="login",
+    help="Login to AWS profile via OIDC Auth and retrieves an AWS SSO access token to exchange for AWS credentials.",
+)
 def login(
     profile: str = typer.Option(
-        "--profile", help="auth via oidc provider for aws access"
+        "--profile", help="auth via oidc provider for AWS access."
     )
 ):
     if profile == None:
@@ -104,25 +109,24 @@ def login(
     )
 
 
-@app.command(name="ls")
+@app.command(name="ls", help="List AWS Profiles configured for OIDC Auth.")
 def list_profiles():
     for p in profiles.keys():
         pprint(f"\nProfile: [yellow bold]{p}")
         pprint(f"Configs: {profiles.get(p)}")
 
 
-@app.command(name="rm")
-def remove_profiles(
-    profile: str = typer.Option(
-        "--profile", help="auth via oidc provider for aws access"
-    )
-):
+@app.command(name="rm", help="Remove AWS Profile configured for OIDC Auth.")
+def remove_profiles(profile: str = typer.Option("--profile", help="remove OICD")):
     if profiles.get(profile):
         profiles.pop(profile)
         profiles.save()  # type: ignore
 
 
-@app.command(name="console")
+@app.command(
+    name="console",
+    help="Get AWS Console base access in browser based on your aws profile.",
+)
 def console(
     profile: str = typer.Option(
         None, "--profile", help="auth via oidc provider for aws console access"
