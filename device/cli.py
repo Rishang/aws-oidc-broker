@@ -104,6 +104,13 @@ def login(
     )
 
 
+@app.command(name="ls")
+def list_profiles():
+    for p in profiles.keys():
+        pprint(f"\nProfile: [yellow bold]{p}")
+        pprint(f"Configs: {profiles.get(p)}")
+
+
 @app.command(name="console")
 def console(
     profile: str = typer.Option(

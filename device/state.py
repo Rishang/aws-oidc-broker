@@ -50,6 +50,15 @@ class State:
     def set(self, key: str, value):
         self.state[key] = value
 
+    def items(self):
+        return self.state.items()
+
+    def keys(self):
+        return self.state.keys()
+
+    def pop(self, key: str):
+        self.state.pop(key)
+
     def __getitem__(self, key: str) -> Dict:
         return self.state[key]
 
