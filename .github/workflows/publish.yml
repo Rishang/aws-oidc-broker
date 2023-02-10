@@ -1,0 +1,59 @@
+name: DockerHub Release
+on:
+  release:
+    types: [published, edited]
+env:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  release-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: tag name
+        run: echo $GITHUB_REF_NAME
+      
+      - uses: docker/login-action@v2
+        with:
+          username: rishang
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: build
+        run: |
+          docker build -t aws-oidc-broker .
+          docker tag aws-oidc-broker rishang/aws-oidc-broker:$GITHUB_REF_NAME
+          docker tag aws-oidc-broker rishang/aws-oidc-broker:latest
+      
+      - name: push
+        run: |
+          docker push rishang/aws-oidc-broker:$GITHUB_REF_NAME
+          docker push rishang/aws-oidc-broker:latest 
+  
+  release-pip:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: tag name
+        run: echo $GITHUB_REF_NAME
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+       
+      - name: Config Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          python -m pip install --upgrade pip
+          poetry install
+      - name: Build 
+        run: |
+          poetry build
+      - name: publish
+        run: |
+          poetry publish -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }}
