@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.10-slim as poetry
+FROM python:3.12.0b1-slim as poetry
 
 RUN pip install -U pip setuptools && pip install --no-cache-dir -U poetry
 
@@ -10,7 +10,7 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry export --without=dev,docs --output requirements.txt
 
 # == Main image == #
-FROM python:3.10-slim
+FROM python:3.12.0b1-slim
 EXPOSE 5000
 
 # Keeps Python from generating .pyc files in the container
