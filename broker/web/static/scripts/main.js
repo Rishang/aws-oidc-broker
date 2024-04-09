@@ -83,7 +83,7 @@ const app = Vue.createApp({
       return hljs_html(`${this.cli.windows}`, 'toml')
     },
     user_image: function () {
-      return `https://avatars.dicebear.com/api/adventurer-neutral/${this.username}.svg`
+      return `https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${this.username}`
     }
   }
 })
