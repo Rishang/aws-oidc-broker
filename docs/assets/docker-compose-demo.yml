@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    container_name: keycloak-db
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak_web
+    command: start
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: db
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HTTP_ENABLED: 'true'
+      KC_HOSTNAME: ${HOSTNAME}  # URL
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_PROXY_HEADERS: xforwarded  # New proxy header configuration
+      KC_HOSTNAME_STRICT: 'false'  # Allow dynamic hostname resolution
+      KC_HOSTNAME_STRICT_HTTPS: 'false'  # Disable strict HTTPS requirement
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    restart: unless-stopped
+
+volumes:
+  keycloak_db_data:
