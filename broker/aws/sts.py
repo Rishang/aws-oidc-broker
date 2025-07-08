@@ -88,7 +88,7 @@ class AWSRoleSTS:
         )
 
         # expiration = sts_role_response.get('Credentials').get('Expiration')
-        durtion = self.duration_seconds
+        duration = self.duration_seconds
 
         json_temp_credentials = json.dumps(url_credentials)
 
@@ -99,7 +99,7 @@ class AWSRoleSTS:
         # as parameters.
         request_url: str = "https://signin.aws.amazon.com/federation"
         request_parameters = "?Action=getSigninToken"
-        request_parameters += f"&SessionDuration={durtion}"
+        request_parameters += f"&SessionDuration={duration}"
 
         def quote_plus_function(s):
             return urllib.parse.quote_plus(s)
@@ -155,5 +155,10 @@ def get_role(
         return sts
     except aws_role.client.exceptions.ExpiredTokenException:
         sts["expired"] = True
+        return sts
+    except Exception as e:
+        sts["expired"] = True
+        sts["error"] = str(e)
+        return sts
 
     return sts
