@@ -2,17 +2,19 @@
     "clientId": "aws-oidc",
     "name": "AWS Federation",
     "description": "AWS Federation",
+    "rootUrl": "http://localhost:5000",
     "adminUrl": "",
-    "baseUrl": "http://localhost:5000/login",
+    "baseUrl": "http://localhost:5000",
     "surrogateAuthRequired": false,
     "enabled": true,
     "alwaysDisplayInConsole": true,
     "clientAuthenticatorType": "client-secret",
+    "secret": "678CRdSGBQMYUryK1BajIRPXMntwYpdX",
     "redirectUris": [
-        "http://localhost:5000/login"
+        "http://localhost:5000/auth*"
     ],
     "webOrigins": [
-        "http://localhost.5000/login"
+        "http://localhost.5000/auth"
     ],
     "notBefore": 0,
     "bearerOnly": false,
@@ -26,28 +28,35 @@
     "frontchannelLogout": false,
     "protocol": "openid-connect",
     "attributes": {
-        "id.token.as.detached.signature": "false",
-        "saml.assertion.signature": "false",
         "saml.force.post.binding": "false",
         "saml.multivalued.roles": "false",
-        "saml.encrypt": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
-        "saml.server.signature": "false",
         "saml.server.signature.keyinfo.ext": "false",
         "use.refresh.tokens": "true",
-        "exclude.session.state.from.auth.response": "false",
+        "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "saml.artifact.binding": "false",
         "backchannel.logout.session.required": "true",
         "client_credentials.use_refresh_token": "false",
-        "saml_force_name_id_format": "false",
         "require.pushed.authorization.requests": "false",
         "saml.client.signature": "false",
+        "id.token.as.detached.signature": "false",
+        "saml.assertion.signature": "false",
+        "client.secret.creation.time": "1751972166",
+        "saml.encrypt": "false",
+        "standard.token.exchange.enabled": "false",
+        "saml.server.signature": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml.artifact.binding": "false",
+        "saml_force_name_id_format": "false",
         "tls.client.certificate.bound.access.tokens": "false",
         "saml.authnstatement": "false",
         "display.on.consent.screen": "false",
-        "saml.onetimeuse.condition": "false"
+        "saml.onetimeuse.condition": "false",
+        "pkce.code.challenge.method": "",
+        "login_theme": "",
+        "consent.screen.text": "",
+        "backchannel.logout.url": ""
     },
     "authenticationFlowBindingOverrides": {},
     "fullScopeAllowed": true,
@@ -69,16 +78,17 @@
             }
         },
         {
-            "name": "Client IP Address",
+            "name": "Client Host",
             "protocol": "openid-connect",
             "protocolMapper": "oidc-usersessionmodel-note-mapper",
             "consentRequired": false,
             "config": {
-                "user.session.note": "clientAddress",
+                "user.session.note": "clientHost",
                 "id.token.claim": "true",
                 "access.token.claim": "true",
-                "claim.name": "clientAddress",
-                "jsonType.label": "String"
+                "claim.name": "clientHost",
+                "jsonType.label": "String",
+                "userinfo.token.claim": "true"
             }
         },
         {
@@ -91,25 +101,28 @@
                 "id.token.claim": "true",
                 "access.token.claim": "true",
                 "claim.name": "clientId",
-                "jsonType.label": "String"
+                "jsonType.label": "String",
+                "userinfo.token.claim": "true"
             }
         },
         {
-            "name": "Client Host",
+            "name": "Client IP Address",
             "protocol": "openid-connect",
             "protocolMapper": "oidc-usersessionmodel-note-mapper",
             "consentRequired": false,
             "config": {
-                "user.session.note": "clientHost",
+                "user.session.note": "clientAddress",
                 "id.token.claim": "true",
                 "access.token.claim": "true",
-                "claim.name": "clientHost",
-                "jsonType.label": "String"
+                "claim.name": "clientAddress",
+                "jsonType.label": "String",
+                "userinfo.token.claim": "true"
             }
         }
     ],
     "defaultClientScopes": [
         "web-origins",
+        "service_account",
         "profile",
         "roles",
         "email"
