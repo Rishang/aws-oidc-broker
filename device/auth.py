@@ -4,6 +4,9 @@ import sys
 import time
 import webbrowser
 import configparser
+import base64
+import hashlib
+import secrets
 from typing import Optional
 
 import typer
@@ -24,10 +27,18 @@ def login(domain: str, client_id: str, audience: Optional[str] = ""):
     Runs the device authorization flow and stores the user object in memory
     """
 
+    # Generate PKCE code verifier and challenge
+    code_verifier = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode('utf-8').rstrip('=')
+    code_challenge = base64.urlsafe_b64encode(
+        hashlib.sha256(code_verifier.encode('utf-8')).digest()
+    ).decode('utf-8').rstrip('=')
+
     device_code_payload = {
         "client_id": client_id,
         "scope": "openid email profile",
         "audience": audience,
+        "code_challenge": code_challenge,
+        "code_challenge_method": "S256",
     }
 
     well_known = requests.get(
@@ -40,7 +51,7 @@ def login(domain: str, client_id: str, audience: Optional[str] = ""):
     )
 
     if device_code_response.status_code != 200:
-        typer.echo("Error generating the device code")
+        typer.echo(f"Error generating the device code: {device_code_response.text}")
         raise typer.Exit(code=1)
 
     pprint("Device code successful")
@@ -58,6 +69,7 @@ def login(domain: str, client_id: str, audience: Optional[str] = ""):
         "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
         "device_code": device_code_data["device_code"],
         "client_id": client_id,
+        "code_verifier": code_verifier,
     }
 
     authenticated = False
@@ -102,7 +114,9 @@ def aws_console(profile: str):
     else:
         log.error(f"token file: {web_identity_token_file} Not found", exit=True)
 
-    console_access = sts.get_role(token=token, role=role_arn, region=region)["console"]
+    sts_access = sts.get_role(token=token, role=role_arn, region=region)
+    print(sts_access)
+    console_access = sts_access["console"]
 
     yn = prompt.ask(
         f"\nProfile: {profile} | Region: {region}\nDo you want to open browser aws console - (Yes/no)"
