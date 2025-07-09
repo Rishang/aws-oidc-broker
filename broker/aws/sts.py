@@ -68,7 +68,7 @@ class AWSRoleSTS:
     def generate_console_url(self, issuer: str = None) -> str:  # type: ignore
         """Generate aws console access url"""
 
-        if issuer == None or issuer == "":
+        if issuer is None or issuer == "":
             issuer = "example.com"
 
         if self.response is None:

@@ -9,14 +9,12 @@ from device.auth import ALGORITHMS, aws_console, login as _login
 from device.utils import HOME, md5hash, pprint, prompt
 from device.config import profiles, Profile, AwsConfig, awsconfig
 
-app = typer.Typer(help=f"AWS IAM access broker for OpenID connect Auth providers.")
+app = typer.Typer(help="AWS IAM access broker for OpenID connect Auth providers.")
 
 
 def see_help(arg: str = ""):
     pprint(
-        "This command required arguments, use "
-        f"[yellow]{arg} --help[reset]"
-        " to see them"
+        f"This command required arguments, use [yellow]{arg} --help[reset] to see them"
     )
     exit(1)
 
@@ -43,7 +41,7 @@ def configure(
         None,
         "--client-wellknown",
         help="auth oidc provider .well-known/openid-configuration url domain.",
-        prompt=f"OpenID auth provider client wellknown url",
+        prompt="OpenID auth provider client wellknown url",
         callback=Profile._check_wellknown_openid,
     ),
     client_id: str = typer.Option(
@@ -58,8 +56,8 @@ def configure(
         help="OPTIONAL: Audience value is either the application (Client ID) for an ID Token or the API that is being called (API Identifier) for an Access Token.",
     ),
 ):
-    if audience == None:
-        audience = prompt.ask(f"OPTIONAL: OpenID auth provider audience", default="")
+    if audience is None:
+        audience = prompt.ask("OPTIONAL: OpenID auth provider audience", default="")
 
     profiles.set(  # type: ignore
         key=profile,
@@ -80,9 +78,9 @@ def configure(
 def login(
     profile: str = typer.Option(
         "--profile", help="auth via oidc provider for AWS access."
-    )
+    ),
 ):
-    if profile == None:
+    if profile is None:
         typer.echo("Required aws profile name", err=True)
         see_help("console")
 
@@ -141,9 +139,9 @@ def remove_profiles(profile: str = typer.Option("--profile", help="remove OICD")
 def console(
     profile: str = typer.Option(
         None, "--profile", help="auth via oidc provider for AWS console access"
-    )
+    ),
 ):
-    if profile == None:
+    if profile is None:
         see_help("console")
 
     aws_console(profile)

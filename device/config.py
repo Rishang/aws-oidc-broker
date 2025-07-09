@@ -35,9 +35,9 @@ class Profile:
 
         try:
             requests.get(f"https://{domain}/.well-known/openid-configuration").json()
-        except:
+        except Exception as e:
             raise typer.BadParameter(
-                "Invalid openid-configuration domain.", param_hint="op"
+                f"Invalid openid-configuration domain {e}.", param_hint="op"
             )
 
         return domain
@@ -61,7 +61,7 @@ def awsconfig(profile: str, aws_config: AwsConfig | None = None, remove: bool = 
     config.read(AWS_CONFIG_FILE)
     write_flag = False
 
-    if remove == True:
+    if remove:
         if config.has_section(profile):
             config.remove_section(profile)
             write_flag = True

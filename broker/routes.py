@@ -1,6 +1,6 @@
 """
-Main routes file for running server, to start server 
-run: python routes.py 
+Main routes file for running server, to start server
+run: python routes.py
 """
 
 import os
@@ -71,7 +71,7 @@ def auth():
 
     args: dict = request.args.to_dict()
 
-    if session.get("user") and args.get("role") != None:
+    if session.get("user") and args.get("role") is not None:
         return redirect(url_for("aws_auth", role=args.get("role"), type="cli"))
 
     return redirect(url_for("homepage"))
@@ -107,7 +107,7 @@ def aws_auth():
         duration_seconds=int(duration_s),
     )
 
-    if sts_role["expired"] == True:
+    if sts_role["expired"]:
         return redirect(url_for("login"))
 
     if type == "cli":

@@ -28,7 +28,7 @@ def md5hash(value: str):
 
 
 def isNone(val):
-    if val == None:
+    if val is None:
         return True
     elif isinstance(val, str) and val != "":
         return False

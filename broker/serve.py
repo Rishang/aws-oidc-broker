@@ -3,6 +3,7 @@ Flask oidc clinet for keycloak
 
 ref: https://github.com/authlib/demo-oauth-client/tree/master/flask-google-login
 """
+
 from flask import Flask
 from authlib.integrations.flask_client import OAuth, FlaskOAuth2App
 
