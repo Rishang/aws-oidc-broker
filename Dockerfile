@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.13-slim as poetry
+FROM python:3.13-slim AS poetry
 
 RUN pip install -U pip setuptools && pip install --no-cache-dir -U poetry poetry-plugin-export
 
